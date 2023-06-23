@@ -1,0 +1,19 @@
+#pragma once
+
+#include <enet/enet.h>
+enum class machine : unsigned int {
+    server,
+    client
+};
+
+enum class game_movement : unsigned int {
+    UP=1001,
+    DOWN,
+    RIGHT,
+    LEFT
+};
+
+enum class message_type : unsigned int {
+    movement = 9001,
+    plain_text
+};
