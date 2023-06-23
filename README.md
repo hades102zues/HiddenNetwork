@@ -1,2 +1,2 @@
 # HiddenNetwork
-A simple framework around ENet to used in my multiplayer stuff
+A simple framework around ENet to be used in my multiplayer stuff
