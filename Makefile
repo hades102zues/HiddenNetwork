@@ -1,5 +1,5 @@
 #compiler Flags
-cxx_flags = -Wall -std=c++17 
+cxx_flags = -Wall -std=c++17  -g
 
 #includes
 inc_enet = third_party/enet/include
