@@ -2,6 +2,7 @@
 #include "../network/hidden_net_common.h"
 #include <string>
 
+
 HiddenServer::HiddenServer(const char* ip, int port, machine host_machine, const int maxClients) {
     m_MAX_CLIENTS = maxClients;
     m_client_id = 0;
@@ -71,8 +72,11 @@ void HiddenServer::onConnection(ENetEvent& event) {
 
     // std::string msg = "Client ID : "+std::to_string(*uniqueClientID)+"\n";
     // sendMessage(msg, event.peer);
+    
 
-    HiddenMessage<game_movement> msg(message_type::movement, game_movement::RIGHT, *uniqueClientID);
+    game_movement msgBody[2] = {game_movement::UP, game_movement::LEFT};
+    size_t msgBodySize = sizeof(msgBody);
+    HiddenMessage<game_movement> msg(message_type::movement,  msgBody, msgBodySize, *uniqueClientID);
     sendMessage<HiddenMessage<game_movement>>(msg, event.peer);
 }
 

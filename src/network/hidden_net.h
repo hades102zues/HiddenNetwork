@@ -26,17 +26,32 @@ class HiddenNet {
                 return;
             }
 
-            //Get the size of the message data in bytes
-            std::size_t bufferSize =  sizeof(msg.type) + sizeof(msg.data) + sizeof(msg.designatedClientID);
+            // Location from which to insert the data.
+            uint8_t* index = 0; 
 
-            // create and zero a byte array that can accommodate the data.
+            // Get the size of the message data in bytes
+            // Create a byte array that can accommodate the data.
+            // 0 out the byteArray;
+            std::size_t bufferSize =  sizeof(msg.clientID) + sizeof(msg.type) + sizeof(msg.bodySize) + msg.bodySize;
             uint8_t byteArray[bufferSize];
             memset(byteArray, 0,  bufferSize);
 
-            //load data into byteArray; byteArray << client's server id << message type << data 
-            memcpy(byteArray, &msg.designatedClientID, sizeof(msg.designatedClientID));
-            memcpy(byteArray + sizeof(msg.designatedClientID), &msg.type, sizeof(msg.type));
-            memcpy(byteArray + sizeof(msg.designatedClientID) + sizeof(msg.type), &msg.data, sizeof(msg.data));
+            // byteArray << client's server id
+            memcpy(byteArray, &msg.clientID, sizeof(msg.clientID));
+            index = byteArray + sizeof(msg.clientID);
+
+            // byteArray << message_type
+            memcpy(index, &msg.type, sizeof(msg.type));
+            index += sizeof(msg.type);
+
+            // byteArray << bodySize
+            memcpy(index, &msg.bodySize, sizeof(msg.bodySize));
+            index += sizeof(msg.bodySize); 
+
+
+            // byteArray << body
+            memcpy(index, msg.body, msg.bodySize); 
+            index += msg.bodySize;
 
             // pass buffer to packet
             ENetPacket* packet = enet_packet_create(byteArray, bufferSize, ENET_PACKET_FLAG_RELIABLE);

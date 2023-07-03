@@ -35,6 +35,7 @@ ENetHost* HiddenNet::initialize() {
 
 }
 
+// Connect to a remote Peer
 ENetPeer* HiddenNet::connect(const char* remoteIp = "127.0.0.1", int remotePort = 3001) {
     ENetAddress remoteAddress;
     ENetEvent event;

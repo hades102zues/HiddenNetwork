@@ -1,6 +1,7 @@
 #pragma once
 
 #include <enet/enet.h>
+#include <vector>
 enum class machine : unsigned int {
     server,
     client
@@ -15,5 +16,6 @@ enum class game_movement : unsigned int {
 
 enum class message_type : unsigned int {
     movement = 9001,
-    plain_text
+    plain_text,
+    game_state
 };

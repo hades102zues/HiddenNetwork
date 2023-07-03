@@ -37,22 +37,42 @@ void HiddenClient::handleEvent() {
 
 void HiddenClient::onMessage(ENetEvent& event) {
 
+    enet_uint8* index = 0;
+
     // get the packet
-    const auto& packetData = event.packet -> data;
+    const auto packetData = event.packet -> data;
 
     // unpack the client's server id
     unsigned int clientId;
-    memcpy(&clientId, packetData, sizeof(unsigned int));
+    memcpy(&clientId, packetData, sizeof(clientId));
+    index = packetData + sizeof(clientId);
 
     // unpack the message type
     message_type type;
-    memcpy(&type, packetData + sizeof(clientId), sizeof(message_type));
+    memcpy(&type, index, sizeof(type));
+    index += sizeof(type);
+
+    // unpack the bodySize
+    size_t bodySize;
+    memcpy(&bodySize, index, sizeof(bodySize));
+    index += sizeof(bodySize);
 
     // based on the message type, create the correct object to hold the data
     if (type == message_type::movement) {
-        game_movement movement;
-        memcpy(&movement, packetData + sizeof(clientId) + sizeof(type), sizeof(game_movement));
-        printf("[Client] ~~~ UUID:{%d}, Message Type:{%d}, Movement Input:{%d}\n", clientId, type, movement);
+
+        // create a local array to hold the body
+        int sizeOfArray = bodySize / sizeof(game_movement);
+        game_movement movements[sizeOfArray]; //create an initial array
+
+
+        memcpy(movements, index, bodySize);
+        index += bodySize;
+
+
+
+        for (auto movement : movements) {
+            printf("[Client] ~~~ UUID:{%d}, Message Type:{%d}, Movement Input:{%d}\n", clientId, type, movement);
+        }
 
         // Call handler
     }

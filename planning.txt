@@ -1,0 +1,7 @@
+1: Extend the message object so that state can be accomodated in the future.
+    * Message has a field that details the size of the data in byte. 
+    * This size field is determined within the constructor
+    * The data member field should always be of DataType <>[].
+
+2: Modify the send function to dissolve these additional fields in the byteArray.
+
