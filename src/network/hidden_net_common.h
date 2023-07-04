@@ -19,3 +19,10 @@ enum class message_type : unsigned int {
     plain_text,
     game_state
 };
+
+struct State {
+    float x;
+    float y;
+    // radius
+    // color
+};

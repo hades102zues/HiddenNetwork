@@ -89,39 +89,7 @@ void HiddenNet::send(std::string msg, ENetPeer* peer) {
     enet_host_flush(m_host);
 }
 
-// void HiddenNet::send(HiddenMessage msg, ENetPeer* peer) {
-//     if (peer == NULL) {
-//         return;
-//     }
 
-//     //Get the size of the message data in bytes
-//     std::size_t bufferSize =  sizeof(msg.id) + sizeof(msg.input) + sizeof(msg.designatedClientID);
-
-//     // create and zero a byte array that can accommodate the data.
-//     uint8_t byteArray[bufferSize];
-//     memset(byteArray, 0,  bufferSize);
-
-//     //load data into byteArray; byteArray << message type << data << client's server id
-//     memcpy(byteArray, &msg.designatedClientID, sizeof(msg.designatedClientID));
-//     memccpy(byteArray + sizeof(msg.designatedClientID), &msg.id, sizeof(msg.id));
-
-
-
-//     memcpy(byteArray, &msg.id, sizeof(msg.id));
-//     memcpy(byteArray + sizeof(msg.id), &msg.input, sizeof(msg.input));
-//     memcpy(byteArray + sizeof(msg.id) + sizeof(msg.input), 
-
-
-//     // pass buffer to packet
-//     ENetPacket* packet = enet_packet_create(byteArray, bufferSize, ENET_PACKET_FLAG_RELIABLE);
-
-//     // Buffer the packet to be sent to remote
-//     enet_peer_send(peer, 0, packet);
-
-//     // Tell host_service to handle outstanding requests
-//     enet_host_flush(m_host);
-
-// }
 
 void HiddenNet::destroyPeer(ENetPeer* peer) {
     enet_peer_reset(peer);

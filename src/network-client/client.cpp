@@ -57,24 +57,40 @@ void HiddenClient::onMessage(ENetEvent& event) {
     memcpy(&bodySize, index, sizeof(bodySize));
     index += sizeof(bodySize);
 
+
+
     // based on the message type, create the correct object to hold the data
+
+
     if (type == message_type::movement) {
 
         // create a local array to hold the body
-        int sizeOfArray = bodySize / sizeof(game_movement);
-        game_movement movements[sizeOfArray]; //create an initial array
+        int length = bodySize / sizeof(game_movement);
+        game_movement movements[length]; 
 
 
         memcpy(movements, index, bodySize);
         index += bodySize;
 
 
-
         for (auto movement : movements) {
             printf("[Client] ~~~ UUID:{%d}, Message Type:{%d}, Movement Input:{%d}\n", clientId, type, movement);
         }
 
-        // Call handler
+    }
+
+    if (type == message_type::game_state) {
+
+        int length = bodySize / sizeof(State);
+        State states[length]; 
+
+        memcpy(states, index, bodySize);
+        index += bodySize;
+
+        for (auto state : states) {
+            printf("X: %f, Y: %f \n", state.x, state.y);
+        }
+
     }
     
 
