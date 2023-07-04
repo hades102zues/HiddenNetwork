@@ -17,7 +17,7 @@ class HiddenNet {
         HiddenNet(const char* ip, int port, machine host_machine);
         ENetHost* initialize();
         ENetPeer* connect(const char* remoteIp, int remotePort);
-        void send(std::string msg, ENetPeer* peer);
+        // void send(std::string msg, ENetPeer* peer);
         // void send(HiddenMessage msg, ENetPeer* peer);
 
         template <typename T>

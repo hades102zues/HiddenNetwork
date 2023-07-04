@@ -74,20 +74,20 @@ ENetPeer* HiddenNet::connect(const char* remoteIp = "127.0.0.1", int remotePort 
 
 }
 
-void HiddenNet::send(std::string msg, ENetPeer* peer) {
+// void HiddenNet::send(std::string msg, ENetPeer* peer) {
     
-    // will not send to disconnected clients
-    if (peer == NULL) {
-        return;
-    }
-    const char* c_msg = msg.c_str();
-    ENetPacket* packet = enet_packet_create(c_msg, strlen(c_msg), ENET_PACKET_FLAG_RELIABLE);
-    // Buffer the packet to be sent to remote
-    enet_peer_send(peer, 0, packet);
+//     // will not send to disconnected clients
+//     if (peer == NULL) {
+//         return;
+//     }
+//     const char* c_msg = msg.c_str();
+//     ENetPacket* packet = enet_packet_create(c_msg, strlen(c_msg), ENET_PACKET_FLAG_RELIABLE);
+//     // Buffer the packet to be sent to remote
+//     enet_peer_send(peer, 0, packet);
 
-    // Tell host_service to handle outstanding requests
-    enet_host_flush(m_host);
-}
+//     // Tell host_service to handle outstanding requests
+//     enet_host_flush(m_host);
+// }
 
 
 

@@ -1,0 +1,12 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/hiddenworld/Documents/code/game_engine/networking/HiddenNetwork",
+            "binaryPath": "/Users/hiddenworld/Documents/code/game_engine/networking/HiddenNetwork/game",
+            "binaryArgs": []
+        }
+    ],
+    "files.associations": {
+        "vector": "cpp"
+    }
+}

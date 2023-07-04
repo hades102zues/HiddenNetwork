@@ -37,15 +37,18 @@ void HiddenClient::handleEvent() {
 
 void HiddenClient::onMessage(ENetEvent& event) {
 
-    enet_uint8* index = 0;
+    //enet_uint8* index = 0;
 
-    // get the packet
+    // get the packet's data
     const auto packetData = event.packet -> data;
+
+    // store the address of the start of the data array
+    enet_uint8* index = packetData;
 
     // unpack the client's server id
     unsigned int clientId;
-    memcpy(&clientId, packetData, sizeof(clientId));
-    index = packetData + sizeof(clientId);
+    memcpy(&clientId, index, sizeof(clientId));
+    index += sizeof(clientId);
 
     // unpack the message type
     message_type type;

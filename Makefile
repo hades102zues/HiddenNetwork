@@ -19,6 +19,7 @@ src = $(wildcard src/*.cpp) #will need to += additional paths
 src += $(wildcard src/network/*.cpp)
 src += $(wildcard src/network-server/*.cpp)
 src += $(wildcard src/network-client/*.cpp)
+src += $(wildcard src/game-server/*.cpp)
 obj = $(src:.cpp=.o)
 
 

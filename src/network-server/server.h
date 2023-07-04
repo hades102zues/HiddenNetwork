@@ -5,7 +5,7 @@
 
 
 class HiddenServer {
-    private:
+    protected:
         int m_MAX_CLIENTS;
         unsigned int m_client_id; // Unique client IDs
         unsigned int m_connectedClients; // count of connected clients
