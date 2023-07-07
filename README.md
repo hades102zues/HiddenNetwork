@@ -1,2 +1,4 @@
 # HiddenNetwork
-This is a simple multiplayer game-server framework that I will be building using Enet. There are very few resources on this subject matter so it will be a big journey.
+This will be a very simple multiplayer framework built using ENet. There are very few tutorials covering this domain....so this repo will be largely explorative.
+
+The MakeFile was configured on Mac.

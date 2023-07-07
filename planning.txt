@@ -1,7 +1,39 @@
-1: Extend the message object so that state can be accomodated in the future.
-    * Message has a field that details the size of the data in byte. 
-    * This size field is determined within the constructor
-    * The data member field should always be of DataType <>[].
+--====Foundations
+1. Storing basic socket details
+    * Build a network class
+    * Class stores : host machine, port and IP address
+    * Function prints this basic info
 
-2: Modify the send function to dissolve these additional fields in the byteArray.
+2. Enet generate socket
+    * Generate a socket / enet host
+    * Test socket creation
+    * Destructor destroys enet host
+
+3. Basic Net Operations
+    * Class Function for event sensing
+    * Class Function for listening loop
+    * Class Function for sending messages
+    * Class Function for connecting to remote 
+
+4. Basic Server-Client Handshake
+    * Clients get a unique identifier
+    * Unique identifier is incremented
+    * Define an connection object that holds {id, peer}
+    * Client info packed into a connection object
+    * Dictionary holding connections <id, connection>
+    * Remove disconnected clients from list
+
+5. Message Object to be sent
+    * Message should contain an clientServerId, messageType, data field
+    * Logic to pack message data into a byteArray
+    * Server and Network can send the msg object
+    * Logic to unpack the message
+    * Print the data
+
+6: Extend the message object so that state can be accomodated in the future.
+    * Message has a field that details the size of the data in byte. 
+    * Message has a field that points to DataType [];
+    * Modify the send function to dissolve these additional fields into the byteArray.
+    * Modify the onMessage function to dissolve the updated byteArray;
+
 
