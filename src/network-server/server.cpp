@@ -80,10 +80,12 @@ void HiddenServer::onConnection(ENetEvent& event) {
     // sendMessage<HiddenMessage<game_movement>>(msg, event.peer);
 
 
-    State msgBody[2] = { State{0.1f, 0.5f}, State{1.1f, 0.5f} };
-    size_t msgBodySize = sizeof(msgBody);
-    HiddenMessage<State> msg(message_type::game_state, msgBody, msgBodySize, *uniqueClientID);
-    sendMessage< HiddenMessage<State> >(msg, event.peer);
+    // State msgBody[2] = { State{0.1f, 0.5f}, State{1.1f, 0.5f} };
+    // size_t msgBodySize = sizeof(msgBody);
+    // HiddenMessage<State> msg(message_type::game_state, msgBody, msgBodySize, *uniqueClientID);
+    // sendMessage< HiddenMessage<State> >(msg, event.peer);
+
+
 }
 
 void HiddenServer::onDisconnection(ENetEvent& event) {

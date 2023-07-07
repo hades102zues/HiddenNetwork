@@ -60,7 +60,10 @@ void HiddenClient::onMessage(ENetEvent& event) {
     memcpy(&bodySize, index, sizeof(bodySize));
     index += sizeof(bodySize);
 
+     // Just print the above variables for the base clase implementation.
 
+
+     
 
     // based on the message type, create the correct object to hold the data
 

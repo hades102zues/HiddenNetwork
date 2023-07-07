@@ -1,2 +1,2 @@
 # HiddenNetwork
-A simple framework around ENet to be used in my multiplayer stuff
+This is a simple multiplayer game-server framework that I will be building using Enet. There are very few resources on this subject matter so it will be a big journey.
