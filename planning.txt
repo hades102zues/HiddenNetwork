@@ -1,4 +1,4 @@
---====Foundations
+--====Network Foundations
 1. Storing basic socket details
     * Build a network class
     * Class stores : host machine, port and IP address
@@ -35,5 +35,12 @@
     * Message has a field that points to DataType [];
     * Modify the send function to dissolve these additional fields into the byteArray.
     * Modify the onMessage function to dissolve the updated byteArray;
+
+
+
+--====Game Server Foundations
+1. Time related basics
+    A function to track system time
+    A fixed delta time (in seconds)
 
 
