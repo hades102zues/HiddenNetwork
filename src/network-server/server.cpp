@@ -5,7 +5,7 @@
 
 HiddenServer::HiddenServer(const char* ip, int port, machine host_machine, const int maxClients) {
     m_MAX_CLIENTS = maxClients;
-    m_client_id = 0;
+    m_client_id = 1000;
     m_connectedClients = 0;
 
     m_ip = ip;
@@ -39,7 +39,7 @@ void HiddenServer::handleEvent() {
                 break;
 
             case ENET_EVENT_TYPE_RECEIVE:
-                printf("[Message Received]\n");
+                onMessage(event);
                 break;
 
             case ENET_EVENT_TYPE_NONE:
@@ -52,27 +52,20 @@ void HiddenServer::handleEvent() {
 
 void HiddenServer::onConnection(ENetEvent& event) {
 
-    // Disconnect client if server limit reached
-    if(m_connectedClients >= m_MAX_CLIENTS) {
-        printf("[SERVER] ~~~ Client limit reached\n");
-        enet_peer_disconnect_now(event.peer, 0);
-        return;
+     
+    // Add the connection
+    int id = addConnection(event.peer);
+
+
+    if (id) { 
+
+        // Send the client a welcome message!
+        const char* msgBody = "Connection accepted. Welcome to HiddenWorldServer.";
+        size_t msgBodySize = (strlen(msgBody)+1) * sizeof(char);
+        HiddenMessage<const char> msg(message_type::plain_text, msgBody, msgBodySize, id);
+        sendMessage<HiddenMessage<const char>>(msg, event.peer);
     }
-
-    printf("[Event] ~~~ Preparing Client Connection \n");
-
-    int* uniqueClientID = new int(m_client_id);
-    m_client_id++;
-    m_connectedClients++;
-    addClient(*uniqueClientID, event.peer);
-    event.peer->data = uniqueClientID;
-
-    printf("[SERVER] ~~~ Client Connected. # of Clients : %d\n", m_connectedClients);
-
-    const char* msgBody = "Connection accepted. Welcome to HiddenWorldServer.";
-    size_t msgBodySize = (strlen(msgBody)+1) * sizeof(char);
-    HiddenMessage<const char> msg(message_type::plain_text, msgBody, msgBodySize, *uniqueClientID);
-    sendMessage<HiddenMessage<const char>>(msg, event.peer);
+    
 
     // game_movement msgBody[2] = {game_movement::UP, game_movement::LEFT};
     // size_t msgBodySize = sizeof(msgBody);
@@ -91,10 +84,45 @@ void HiddenServer::onConnection(ENetEvent& event) {
 void HiddenServer::onDisconnection(ENetEvent& event) {
     
     printf("[Event] ~~~ Client Disconnected \n");
-
     int clientId = *((int*)event.peer->data);
+    removeConnection(clientId, event.peer);
 
-    //check to see if client exists
+}
+
+void HiddenServer::onMessage(ENetEvent &event) {
+    printf("[SERVER] ~~~ Message Received\n");
+}
+
+int HiddenServer::addConnection(ENetPeer* peer) {
+
+    // Disconnect client if server limit reached
+    if(m_connectedClients >= m_MAX_CLIENTS) {
+        printf("[SERVER] ~~~ Client limit reached\n");
+        enet_peer_disconnect_now(peer, 0);
+        return -1;
+    }
+
+    printf("[Event] ~~~ Preparing Client Connection \n");
+
+    // get a GUID
+    int* uniqueClientID = new int(m_client_id);
+    m_client_id++;
+    m_connectedClients++;
+   
+    // STore the GUID on the peer object
+    peer->data = uniqueClientID;
+
+    // Store the connection
+    HiddenConnection connection(*uniqueClientID, peer);
+    m_clients.emplace(*uniqueClientID, connection);
+
+    printf("[SERVER] ~~~ Client Connected. # of Clients : %d\n", m_connectedClients);
+
+    return *uniqueClientID;
+}
+
+void HiddenServer::removeConnection(unsigned int clientId, ENetPeer* peer) {
+     //check to see if client exists
     if (findClient(clientId) == NULL) {
         return;
     }
@@ -104,17 +132,12 @@ void HiddenServer::onDisconnection(ENetEvent& event) {
     m_connectedClients--;
 
     // free the memory
-    delete ((int*)event.peer->data);
+    delete ((int*)peer->data);
 
     // cleanup the peer data
-    m_network->destroyPeer(event.peer);
+    m_network->destroyPeer(peer);
 
     printf("[SERVER] ~~~ # of Clients : %d\n", m_connectedClients);
-}
-
-void HiddenServer::addClient(unsigned int id, ENetPeer* peer) {
-    HiddenConnection connection(id, peer);
-    m_clients.emplace(id, connection);
 }
 
 HiddenConnection* HiddenServer::findClient(unsigned int id) {
@@ -139,18 +162,6 @@ bool HiddenServer::isClientedConnected(unsigned int id) {
 
     return true;
 }
-
-// void HiddenServer::sendMessage(HiddenMessage msg, ENetPeer* client) {
-    
-//     // get the client's unique id
-//     int clientId = *((int*)client->data);
-
-//     if(isClientedConnected(clientId)){
-//         m_network->send(msg, client);
-//     }  
-// }
-
-
 
 void HiddenServer::info() {
     printf("[SERVER] ~~~ Client Max: %d, Available Client ID: %d, # of Connected Clients: %d \n", m_MAX_CLIENTS, m_client_id, m_connectedClients);

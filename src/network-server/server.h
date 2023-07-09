@@ -24,11 +24,15 @@ class HiddenServer {
     public:
     HiddenServer(const char* ip, int port, machine host_machine, const int maxClients);
     virtual void run();
-    virtual void handleEvent();
+    void handleEvent();
     virtual void onConnection(ENetEvent& event);
     virtual void onDisconnection(ENetEvent& event);
-    void addClient(unsigned int id, ENetPeer* peer);
+    virtual void onMessage(ENetEvent& event);
+
+    int addConnection(ENetPeer* peer);
+    void removeConnection(unsigned int clientId, ENetPeer* peer);
     HiddenConnection* findClient(unsigned int id);
+
     bool isClientedConnected(unsigned int id);
     // void sendMessage(HiddenMessage msg, ENetPeer* client);
 

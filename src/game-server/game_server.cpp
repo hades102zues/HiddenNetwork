@@ -15,7 +15,7 @@ void HiddenGameServer::run () {
         // send game state to game players
     }
 }
-void HiddenGameServer::handleEvent() {}
+
 void HiddenGameServer::onConnection(ENetEvent& event) {}
 void HiddenGameServer::onDisconnection(ENetEvent& event){}
 void HiddenGameServer::onMessage(ENetEvent& event) {}
