@@ -41,6 +41,6 @@
 --====Game Server Foundations
 1. Time related basics
     A function to track system time
-    A fixed delta time (in seconds)
+    A fixed delta time (in seconds) 
 
 

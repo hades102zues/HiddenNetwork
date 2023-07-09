@@ -69,10 +69,10 @@ void HiddenServer::onConnection(ENetEvent& event) {
 
     printf("[SERVER] ~~~ Client Connected. # of Clients : %d\n", m_connectedClients);
 
-
-    // std::string msg = "Client ID : "+std::to_string(*uniqueClientID)+"\n";
-    // sendMessage(msg, event.peer);
-    
+    const char* msgBody = "Connection accepted. Welcome to HiddenWorldServer.";
+    size_t msgBodySize = (strlen(msgBody)+1) * sizeof(char);
+    HiddenMessage<const char> msg(message_type::plain_text, msgBody, msgBodySize, *uniqueClientID);
+    sendMessage<HiddenMessage<const char>>(msg, event.peer);
 
     // game_movement msgBody[2] = {game_movement::UP, game_movement::LEFT};
     // size_t msgBodySize = sizeof(msgBody);

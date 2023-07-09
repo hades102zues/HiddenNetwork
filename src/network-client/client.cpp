@@ -37,8 +37,6 @@ void HiddenClient::handleEvent() {
 
 void HiddenClient::onMessage(ENetEvent& event) {
 
-    //enet_uint8* index = 0;
-
     // get the packet's data
     const auto packetData = event.packet -> data;
 
@@ -60,13 +58,16 @@ void HiddenClient::onMessage(ENetEvent& event) {
     memcpy(&bodySize, index, sizeof(bodySize));
     index += sizeof(bodySize);
 
-     // Just print the above variables for the base clase implementation.
-
-
-     
 
     // based on the message type, create the correct object to hold the data
 
+    if (type == message_type::plain_text) {
+
+        int length = bodySize / sizeof(char);
+        char plainText[length];
+        memcpy(plainText, index, bodySize);
+        printf("[Client] ~~~ UUID:{%d}, %s\n", clientId, plainText);
+    }
 
     if (type == message_type::movement) {
 
@@ -76,7 +77,7 @@ void HiddenClient::onMessage(ENetEvent& event) {
 
 
         memcpy(movements, index, bodySize);
-        index += bodySize;
+
 
 
         for (auto movement : movements) {
@@ -91,7 +92,7 @@ void HiddenClient::onMessage(ENetEvent& event) {
         State states[length]; 
 
         memcpy(states, index, bodySize);
-        index += bodySize;
+
 
         for (auto state : states) {
             printf("X: %f, Y: %f \n", state.x, state.y);
