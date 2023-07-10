@@ -25,8 +25,7 @@ class HiddenNet {
                 return;
             }
 
-            // Location from which to insert the data.
-            uint8_t* index = 0; 
+            
 
             // Get the size of the message data in bytes
             // Create a byte array that can accommodate the data.
@@ -35,9 +34,12 @@ class HiddenNet {
             uint8_t byteArray[bufferSize];
             memset(byteArray, 0,  bufferSize);
 
+            // Location from which to insert the data.
+            uint8_t* index = byteArray; 
+
             // byteArray << client's server id
-            memcpy(byteArray, &msg.clientID, sizeof(msg.clientID));
-            index = byteArray + sizeof(msg.clientID);
+            memcpy(index, &msg.clientID, sizeof(msg.clientID));
+            index += sizeof(msg.clientID);
 
             // byteArray << message_type
             memcpy(index, &msg.type, sizeof(msg.type));

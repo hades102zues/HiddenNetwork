@@ -9,7 +9,7 @@
 class HiddenGameServer : public HiddenServer {
     private:
         std::vector<EntityState> m_gameState;
-        std::unordered_map<unsigned int, bool> m_players; 
+        std::unordered_map<unsigned int, HiddenConnection> m_players; 
         unsigned int m_max_players;
 
     public:
