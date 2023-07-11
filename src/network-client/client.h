@@ -7,6 +7,7 @@ class HiddenClient {
         std::unique_ptr<HiddenNet> m_network;
         unsigned int m_GUID = 0;
         ENetPeer* m_server = nullptr;
+        bool m_terminate = true;
 
         // below are removable?
         const char* m_ip;
@@ -16,6 +17,7 @@ class HiddenClient {
 
     public:
         HiddenClient(const char* ip, int port, machine host_machine);
+        void run();
         void connectToServer(const char* remoteIp, int remotePort);
         void handleEvent();
         void onMessage(ENetEvent& event);

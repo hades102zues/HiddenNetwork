@@ -7,10 +7,17 @@ HiddenClient::HiddenClient(const char* ip, int port, machine host_machine) {
     m_host_machine = host_machine;
     m_network = std::make_unique<HiddenNet>(ip, port, host_machine);
     m_client_host = m_network->initialize();
+    m_terminate = false;
 }
 
 void HiddenClient::connectToServer(const char* remoteIp, int remotePort) {
     m_network->connect(remoteIp, remotePort);
+}
+
+void HiddenClient::run() {
+    while (!m_terminate) {
+        handleEvent();
+    }
 }
 
 void HiddenClient::handleEvent() {
@@ -35,7 +42,7 @@ void HiddenClient::handleEvent() {
 }
 
 void HiddenClient::onMessage(ENetEvent& event) {
-    printf("[CLIENT] ~~~ Message from server received.\n");
+    
     // get the packet's data
     const auto packetData = event.packet -> data;
 
@@ -62,37 +69,48 @@ void HiddenClient::onMessage(ENetEvent& event) {
 
     if (type == message_type::plain_text) {
 
+
         int length = bodySize / sizeof(char);
         char plainText[length];
         memcpy(plainText, index, bodySize);
-        printf("[Server] ~~~ Client UUID:{%d}, %s\n", clientId, plainText);
+        printf("[SERVER] ~~~ Client UUID:{%d}, %s\n", clientId, plainText);
     }
 
     if (type == message_type::connection_approved) {
+
 
         // parse the body
         int length = bodySize / sizeof(char);
         char plainText[length];
         memcpy(plainText, index, bodySize);
-        printf("[Server] ~~~ Client UUID:{%d}, %s\n", clientId, plainText);
+        printf("[SERVER] ~~~ Client UUID:{%d}, %s\n", clientId, plainText);
 
         // store the client's GUID
         m_GUID = clientId;
 
         // store the server's connection
         m_server =  event.peer;
+
+
+        // DELETE BELOW
+        sendTestMessage();
     }
 
     if (type == message_type::game_state) {
 
-        int length = bodySize / sizeof(State);
-        State states[length]; 
+        int length = bodySize / sizeof(ClientSideEntityState);
+        ClientSideEntityState states[length]; 
 
         memcpy(states, index, bodySize);
 
-
+        printf("[CLIENT] ~~~ Game State received from server: \n");
         for (auto state : states) {
-            printf("X: %f, Y: %f \n", state.x, state.y);
+
+            auto playerId = state.playerId;
+            auto x = state.playerState.x;
+            auto y = state.playerState.y;
+            auto color = state.playerState.color;
+            printf(" GUID %d => (%d,%d) : {%d, %d, %d, %d}\n",playerId, x, y, color.r, color.g, color.b, color.a);
         }
 
     }

@@ -2,6 +2,7 @@
 
 #include <enet/enet.h>
 #include <vector>
+#include "../game-server/game_state.h"
 
 enum class machine : unsigned int {
     server,
@@ -22,9 +23,3 @@ enum class message_type : unsigned int {
     connection_approved
 };
 
-struct State {
-    float x;
-    float y;
-    // radius
-    // color
-};

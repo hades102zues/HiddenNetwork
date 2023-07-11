@@ -64,6 +64,7 @@ void HiddenServer::onConnection(ENetEvent& event) {
         const char* msgBody = "Connection accepted. Welcome to HiddenWorldServer.";
         size_t msgBodySize = (strlen(msgBody)+1) * sizeof(char);
         HiddenMessage<const char> msg(message_type::plain_text, msgBody, msgBodySize, id);
+        //m_network->send(msg, event.peer);
         sendMessage<HiddenMessage<const char>>(msg, event.peer);
     }
     
@@ -138,6 +139,7 @@ void HiddenServer::removeConnection(unsigned int clientId, ENetPeer* peer) {
     // cleanup the peer data
     m_network->destroyPeer(peer);
 
+    printf("[SERVER] ~~~ Client GUID: %d network resources cleared \n", clientId);
     printf("[SERVER] ~~~ # of Clients : %d\n", m_connectedClients);
 }
 

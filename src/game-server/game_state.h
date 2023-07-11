@@ -12,3 +12,8 @@ struct EntityState {
     int y;
     RGBA color;
 };
+
+struct ClientSideEntityState{
+    unsigned int playerId;
+    EntityState playerState;
+};

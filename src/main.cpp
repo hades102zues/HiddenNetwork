@@ -15,10 +15,10 @@ int main(int argc, char* argv[]) {
     server.run();
 
     //======== CLIENT
-    // HiddenClient client = HiddenClient("127.0.0.1", 3000, machine::client);
+    // HiddenClient client("127.0.0.1", 3000, machine::client);
     // client.info();
     // client.connectToServer("127.0.0.1", 3001);
-    // client.handleEvent();
+    // client.run();
 
 
     return 0;

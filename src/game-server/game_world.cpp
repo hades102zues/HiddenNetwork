@@ -1,16 +1,26 @@
 #include "game_world.h"
 
 
-HiddenGame::HiddenGame(int playerLimit) : m_max_players(playerLimit) {
+
+HiddenGame::HiddenGame(const std::unique_ptr<HiddenNet>& net, int playerLimit) : m_network(net), m_max_players(playerLimit) {
 
 }
+void HiddenGame::run() {
+    // setup
+    // handling input
+    update();
+    sendState();
 
+}
 void HiddenGame::update() {
     //genPlayerList();
-    genGameState();
+    //genGameState();
 }
 
 void HiddenGame::handleMovement(unsigned int clientId, game_movement val) {
+
+    printf("[GAME] ~~~ Player UUID:{%d}, Movement Message Input:{%d}\n", clientId, val);
+    
 
     // apply the movement to client state
     if(findPlayer(clientId)) {
@@ -33,7 +43,30 @@ void HiddenGame::handleMovement(unsigned int clientId, game_movement val) {
 
 }
 
+void HiddenGame::sendState() {
+    // Prep a buffer to hold the data
+    std::vector<ClientSideEntityState> transState;
+    
+    // copy into the buffer
+    for (auto it : m_gameState) {
+        unsigned int id = it.first;
+        EntityState state = it.second;
+        ClientSideEntityState clientSideState = {id, state};
+        transState.push_back(clientSideState);
+    }
 
+    // send the data to every player
+    for (auto it : m_players) {
+        unsigned int id = it.first;
+        ENetPeer* player = it.second;
+
+        auto* body = &transState[0];
+        size_t bodySize = transState.size() * sizeof(ClientSideEntityState);
+        HiddenMessage<ClientSideEntityState> msg(message_type::game_state, body, bodySize, id);
+        m_network->send<HiddenMessage<ClientSideEntityState>>(msg, player);
+    }
+
+}
 void HiddenGame::addPlayer(const HiddenConnection& conn) {
 
     // In general I don't think I have encountered a single game that 
@@ -52,6 +85,8 @@ void HiddenGame::addPlayer(const HiddenConnection& conn) {
         m_gameState.emplace(conn.getClientId(), state);
 
         m_playerCount++;
+
+        printf("[GAME] ~~~ Added Player GUID %d to game \n", conn.getClientId());
     }
     
 

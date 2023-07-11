@@ -2,7 +2,7 @@
 
 HiddenGameServer::HiddenGameServer(const char* ip, int port, machine host_machine, const int maxClients) 
 : HiddenServer(ip, port, host_machine, maxClients) {
-    m_game = std::make_unique<HiddenGame>(2);
+    m_game = std::make_unique<HiddenGame>(m_network, 2);
 };
 
 
@@ -16,7 +16,7 @@ void HiddenGameServer::run () {
         handleEvent();
 
         // Have a function on seperate thread that handles updating the game objects???
-        m_game->update();
+        m_game->run();
 
 
         // send game state to game players
@@ -40,9 +40,6 @@ void HiddenGameServer::onConnection(ENetEvent& event) {
         // add player to the game
         m_game->addPlayer(m_clients.at(id));
 
-
-        printf("[Game Server] added player to game \n");
-
     }
 
 
@@ -58,6 +55,7 @@ void HiddenGameServer::onDisconnection(ENetEvent& event){
 
     // remove client from server collection
     removeConnection(clientId, event.peer);
+
 
 
 }
@@ -93,7 +91,7 @@ void HiddenGameServer::onMessage(ENetEvent& event) {
         int length = bodySize / sizeof(char);
         char plainText[length];
         memcpy(plainText, index, bodySize);
-        printf("[SERVER] ~~~ Client UUID:{%d} echoed : %s\n", clientId, plainText);
+        printf("[GAME SERVER] ~~~ Client UUID:{%d} echoed: %s\n", clientId, plainText);
     }
 
     if (type == message_type::movement) {
@@ -104,10 +102,6 @@ void HiddenGameServer::onMessage(ENetEvent& event) {
 
 
         memcpy(movements, index, bodySize);
-
-        for (auto movement : movements) {
-            printf("[SERVER] ~~~ Client UUID:{%d}, Message Type:{%d}, Movement Input:{%d}\n", clientId, type, movement);
-        }
 
         m_game->handleMovement(clientId, movements[0]);
 
