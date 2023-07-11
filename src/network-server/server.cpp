@@ -83,8 +83,8 @@ void HiddenServer::onConnection(ENetEvent& event) {
 
 void HiddenServer::onDisconnection(ENetEvent& event) {
     
-    printf("[Event] ~~~ Client Disconnected \n");
     int clientId = *((int*)event.peer->data);
+    printf("[Event] ~~~ Client GUID: %d has Disconnected \n", clientId);
     removeConnection(clientId, event.peer);
 
 }

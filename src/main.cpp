@@ -1,12 +1,17 @@
 #include "network-server/server.h"
 #include "network-client/client.h"
+#include "game-server/game_server.h"
 
 
 
 int main(int argc, char* argv[]) {
 
-    //======== SERVER
-    HiddenServer server = HiddenServer("127.0.0.1", 3001, machine::server,5);
+    //======== Base SERVER
+    // HiddenServer server = HiddenServer("127.0.0.1", 3001, machine::server,5);
+    //server.run();
+
+    //======== GAME SERVER
+    HiddenGameServer server("127.0.0.1", 3001, machine::server,5);
     server.run();
 
     //======== CLIENT

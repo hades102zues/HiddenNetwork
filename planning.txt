@@ -39,8 +39,9 @@
 
 
 --====Game Server Foundations
-1. Time related basics
-    A function to track system time
-    A fixed delta time (in seconds) 
+
+1. Player auto joins a game
+    A new connection is added to the game
+    When a disconnection is triggered the player is removed from game
 
 
