@@ -6,14 +6,43 @@ HiddenGame::HiddenGame(int playerLimit) : m_max_players(playerLimit) {
 }
 
 void HiddenGame::update() {
-    genPlayerList();
+    //genPlayerList();
     genGameState();
 }
 
+void HiddenGame::handleMovement(unsigned int clientId, game_movement val) {
+
+    // apply the movement to client state
+    if(findPlayer(clientId)) {
+        auto& playerState = m_gameState.at(clientId);
+
+        if (val == game_movement::UP) {
+            playerState.y -= m_playerMoveSpeed; // * m_dt;
+        }
+        if (val == game_movement::RIGHT) {
+            playerState.x += m_playerMoveSpeed; // * m_dt;
+        }
+        if (val == game_movement::DOWN) {
+            playerState.y += m_playerMoveSpeed; // * m_dt;
+        }
+        if (val == game_movement::LEFT) {
+            playerState.x -= m_playerMoveSpeed; // * m_dt;
+        }
+
+    }
+
+}
+
+
 void HiddenGame::addPlayer(const HiddenConnection& conn) {
 
-    // Technically this doesn't make sense because a reconnected client gets a new GUID
-    if(!findPlayer(conn.getClientId())) {
+    // In general I don't think I have encountered a single game that 
+    // you can disconnect from, later rejoin and be where you left off.
+    // The Exception would be MMORPGs but then there is probably a decision on what data shoudl
+    // persist and what shouldn't. And upon disconnection the pieces that should persist would be
+    // store in some db and mapped to  the user's account.
+
+    if(!findPlayer(conn.getClientId()) && m_playerCount < m_max_players) { // Technically never necessary.
         
         // add the player to the playerList
         m_players.emplace(conn.getClientId(), conn.getPeer());
@@ -21,6 +50,8 @@ void HiddenGame::addPlayer(const HiddenConnection& conn) {
         // new entity state is generated for the player
         EntityState state = {0, 0, RGBA{135, 60, 190, 255}};
         m_gameState.emplace(conn.getClientId(), state);
+
+        m_playerCount++;
     }
     
 
@@ -33,6 +64,7 @@ void HiddenGame::removePlayer(unsigned int clientId) {
     if (findPlayer(clientId)) {
         m_players.erase(clientId);
         m_gameState.erase(clientId);
+        m_playerCount--;
 
         // For now we leave the client's game state and allow them to continue from where they left off
     }

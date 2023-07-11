@@ -41,7 +41,9 @@
 --====Game Server Foundations
 
 1. Player auto joins a game
-    A new connection is added to the game
-    When a disconnection is triggered the player is removed from game
+    * A new connection is added to the game
+    * When a disconnection is triggered the player is removed from game
+    Game takes a input from the client and applies it.
+    Game sends state.
 
 

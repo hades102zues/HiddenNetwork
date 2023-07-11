@@ -12,7 +12,7 @@ void HiddenGameServer::run () {
 
     while (m_isServerRunning) {
 
-        // Server Events: Connections, Disconnections. For Game Messages to game object??
+        // Server Events: Connections, Disconnections, Messages. Specifically forward game input to game object
         handleEvent();
 
         // Have a function on seperate thread that handles updating the game objects???
@@ -33,7 +33,7 @@ void HiddenGameServer::onConnection(ENetEvent& event) {
         // Send the client a welcome message!
         const char* msgBody = "Connection accepted. Welcome to HiddenWorldServer.";
         size_t msgBodySize = (strlen(msgBody)+1) * sizeof(char);
-        HiddenMessage<const char> msg(message_type::plain_text, msgBody, msgBodySize, id);
+        HiddenMessage<const char> msg(message_type::connection_approved, msgBody, msgBodySize, id);
         sendMessage<HiddenMessage<const char>>(msg, event.peer);
     
 
@@ -62,7 +62,58 @@ void HiddenGameServer::onDisconnection(ENetEvent& event){
 
 }
 
-void HiddenGameServer::onMessage(ENetEvent& event) {}
+void HiddenGameServer::onMessage(ENetEvent& event) {
+
+    // get the packet's data
+    const auto packetData = event.packet -> data;
+
+    // store the address of the start of the data array
+    enet_uint8* index = packetData;
+
+    // unpack the client's server id
+    unsigned int clientId;
+    memcpy(&clientId, index, sizeof(clientId));
+    index += sizeof(clientId);
+
+    // unpack the message type
+    message_type type;
+    memcpy(&type, index, sizeof(type));
+    index += sizeof(type);
+
+    // unpack the bodySize
+    size_t bodySize;
+    memcpy(&bodySize, index, sizeof(bodySize));
+    index += sizeof(bodySize);
+
+
+    // based on the message type, create the correct object to hold the data
+
+    if (type == message_type::plain_text) {
+
+        int length = bodySize / sizeof(char);
+        char plainText[length];
+        memcpy(plainText, index, bodySize);
+        printf("[SERVER] ~~~ Client UUID:{%d} echoed : %s\n", clientId, plainText);
+    }
+
+    if (type == message_type::movement) {
+
+        // create a local array to hold the body
+        int length = bodySize / sizeof(game_movement);
+        game_movement movements[length]; 
+
+
+        memcpy(movements, index, bodySize);
+
+        for (auto movement : movements) {
+            printf("[SERVER] ~~~ Client UUID:{%d}, Message Type:{%d}, Movement Input:{%d}\n", clientId, type, movement);
+        }
+
+        m_game->handleMovement(clientId, movements[0]);
+
+    }
+
+}
 
 
 

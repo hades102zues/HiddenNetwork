@@ -18,13 +18,12 @@ void HiddenClient::handleEvent() {
     while(enet_host_service (m_client_host, &event, 1000) > 0) {
         switch(event.type) {
             case ENET_EVENT_TYPE_CONNECT: 
-                printf("[Server Connected]\n");
+                onConnection(event);
                 break;
             case ENET_EVENT_TYPE_DISCONNECT:
-                printf("[Server Disconneted]\n");
+                onDisconnection(event);
                 break;
             case ENET_EVENT_TYPE_RECEIVE:
-                printf("[Server Message Received]\n");
                 onMessage(event);
                 enet_packet_destroy (event.packet);
                 break;
@@ -36,7 +35,7 @@ void HiddenClient::handleEvent() {
 }
 
 void HiddenClient::onMessage(ENetEvent& event) {
-
+    printf("[CLIENT] ~~~ Message from server received.\n");
     // get the packet's data
     const auto packetData = event.packet -> data;
 
@@ -66,24 +65,22 @@ void HiddenClient::onMessage(ENetEvent& event) {
         int length = bodySize / sizeof(char);
         char plainText[length];
         memcpy(plainText, index, bodySize);
-        printf("[Client] ~~~ UUID:{%d}, %s\n", clientId, plainText);
+        printf("[Server] ~~~ Client UUID:{%d}, %s\n", clientId, plainText);
     }
 
-    if (type == message_type::movement) {
+    if (type == message_type::connection_approved) {
 
-        // create a local array to hold the body
-        int length = bodySize / sizeof(game_movement);
-        game_movement movements[length]; 
+        // parse the body
+        int length = bodySize / sizeof(char);
+        char plainText[length];
+        memcpy(plainText, index, bodySize);
+        printf("[Server] ~~~ Client UUID:{%d}, %s\n", clientId, plainText);
 
+        // store the client's GUID
+        m_GUID = clientId;
 
-        memcpy(movements, index, bodySize);
-
-
-
-        for (auto movement : movements) {
-            printf("[Client] ~~~ UUID:{%d}, Message Type:{%d}, Movement Input:{%d}\n", clientId, type, movement);
-        }
-
+        // store the server's connection
+        m_server =  event.peer;
     }
 
     if (type == message_type::game_state) {
@@ -101,6 +98,24 @@ void HiddenClient::onMessage(ENetEvent& event) {
     }
     
 
+}
+
+
+void HiddenClient::onConnection(ENetEvent& event) {
+    printf("[CLIENT] ~~~ Connection to Server Established.\n");
+}
+
+void HiddenClient::onDisconnection(ENetEvent& event) {
+    printf("[CLIENT DISCONNECTED FROM SERVER]\n");
+    m_GUID = 0;
+    m_server = nullptr;
+}
+
+void HiddenClient::sendTestMessage() {
+    game_movement msgBody[1] = {game_movement::UP};
+    size_t msgBodySize = sizeof(msgBody);
+    HiddenMessage<game_movement> msg(message_type::movement,  msgBody, msgBodySize, m_GUID);
+    sendMessage<HiddenMessage<game_movement>>(msg, m_server);
 }
 
 void HiddenClient::info() {

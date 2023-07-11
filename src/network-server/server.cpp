@@ -40,6 +40,7 @@ void HiddenServer::handleEvent() {
 
             case ENET_EVENT_TYPE_RECEIVE:
                 onMessage(event);
+                enet_packet_destroy (event.packet);
                 break;
 
             case ENET_EVENT_TYPE_NONE:
@@ -171,7 +172,7 @@ void HiddenServer::listClients() {
     for (auto client : m_clients) {
         auto connection = client.second;
         auto clientId = connection.client_id;
-        auto peer = connection.peer;
+        //auto peer = connection.peer;
 
         printf("Client [%d]\n", clientId);
     }
