@@ -90,29 +90,6 @@ void HiddenClient::onMessage(ENetEvent& event) {
 
         // store the server's connection
         m_server =  event.peer;
-
-
-        // DELETE BELOW
-        sendTestMessage();
-    }
-
-    if (type == message_type::game_state) {
-
-        int length = bodySize / sizeof(ClientSideEntityState);
-        ClientSideEntityState states[length]; 
-
-        memcpy(states, index, bodySize);
-
-        printf("[CLIENT] ~~~ Game State received from server: \n");
-        for (auto state : states) {
-
-            auto playerId = state.playerId;
-            auto x = state.playerState.x;
-            auto y = state.playerState.y;
-            auto color = state.playerState.color;
-            printf(" GUID %d => (%d,%d) : {%d, %d, %d, %d}\n",playerId, x, y, color.r, color.g, color.b, color.a);
-        }
-
     }
     
 

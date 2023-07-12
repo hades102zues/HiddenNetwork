@@ -20,6 +20,7 @@ src += $(wildcard src/network/*.cpp)
 src += $(wildcard src/network-server/*.cpp)
 src += $(wildcard src/network-client/*.cpp)
 src += $(wildcard src/game-server/*.cpp)
+src += $(wildcard src/game-client/*.cpp)
 obj = $(src:.cpp=.o)
 
 

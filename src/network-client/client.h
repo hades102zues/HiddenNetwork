@@ -3,7 +3,7 @@
 
 
 class HiddenClient {
-    private:
+    protected:
         std::unique_ptr<HiddenNet> m_network;
         unsigned int m_GUID = 0;
         ENetPeer* m_server = nullptr;
@@ -17,12 +17,12 @@ class HiddenClient {
 
     public:
         HiddenClient(const char* ip, int port, machine host_machine);
-        void run();
+        virtual void run();
         void connectToServer(const char* remoteIp, int remotePort);
         void handleEvent();
-        void onMessage(ENetEvent& event);
-        void onConnection(ENetEvent& event);
-        void onDisconnection(ENetEvent& event);
+        virtual void onMessage(ENetEvent& event);
+        virtual void onConnection(ENetEvent& event);
+        virtual void onDisconnection(ENetEvent& event);
         template <typename T>
         void sendMessage(T msg, ENetPeer* server) {
             if(m_GUID){

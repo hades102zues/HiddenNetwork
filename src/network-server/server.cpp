@@ -63,23 +63,10 @@ void HiddenServer::onConnection(ENetEvent& event) {
         // Send the client a welcome message!
         const char* msgBody = "Connection accepted. Welcome to HiddenWorldServer.";
         size_t msgBodySize = (strlen(msgBody)+1) * sizeof(char);
-        HiddenMessage<const char> msg(message_type::plain_text, msgBody, msgBodySize, id);
-        //m_network->send(msg, event.peer);
+        HiddenMessage<const char> msg(message_type::connection_approved, msgBody, msgBodySize, id);
         sendMessage<HiddenMessage<const char>>(msg, event.peer);
+
     }
-    
-
-    // game_movement msgBody[2] = {game_movement::UP, game_movement::LEFT};
-    // size_t msgBodySize = sizeof(msgBody);
-    // HiddenMessage<game_movement> msg(message_type::movement,  msgBody, msgBodySize, *uniqueClientID);
-    // sendMessage<HiddenMessage<game_movement>>(msg, event.peer);
-
-
-    // State msgBody[2] = { State{0.1f, 0.5f}, State{1.1f, 0.5f} };
-    // size_t msgBodySize = sizeof(msgBody);
-    // HiddenMessage<State> msg(message_type::game_state, msgBody, msgBodySize, *uniqueClientID);
-    // sendMessage< HiddenMessage<State> >(msg, event.peer);
-
 
 }
 
